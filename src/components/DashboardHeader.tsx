@@ -3,7 +3,6 @@
 import { useState } from "react";
 import SignOutButton from "@/components/SignOutButton";
 import SettingsModal from "@/components/SettingsModal";
-import ExportModal from "@/components/ExportModal";
 import { useSetup } from "@/hooks/useSetup";
 import { daysBetween } from "@/lib/dates";
 
@@ -29,7 +28,6 @@ export default function DashboardHeader() {
   const { setup, loading, isFirstRun, saveSetup } = useSetup();
   const [manualOpen, setManualOpen] = useState(false);
   const [dismissedFirstRun, setDismissedFirstRun] = useState(false);
-  const [exportOpen, setExportOpen] = useState(false);
 
   const modalOpen =
     manualOpen || (!loading && isFirstRun && !dismissedFirstRun);
@@ -61,17 +59,8 @@ export default function DashboardHeader() {
   return (
     <>
       <div className="topbar">
-        <span className="title">Dashboard</span>
+        <span />
         <div style={{ display: "flex", gap: "8px" }}>
-          <button
-            className="gear-btn"
-            aria-label="Export data"
-            title="Export data"
-            style={{ width: "auto", padding: "0 12px", fontSize: "12.5px", fontWeight: 600 }}
-            onClick={() => setExportOpen(true)}
-          >
-            Export
-          </button>
           <button
             className="gear-btn"
             aria-label="Open settings"
@@ -116,8 +105,6 @@ export default function DashboardHeader() {
           onClose={closeModal}
         />
       )}
-
-      {exportOpen && <ExportModal onClose={() => setExportOpen(false)} />}
     </>
   );
 }
