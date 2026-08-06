@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import type { Setup } from "@/hooks/useSetup";
+import { createClient } from "@/lib/supabase/client";
 
 type SettingsModalProps = {
   isFirstRun: boolean;
@@ -21,6 +22,26 @@ export default function SettingsModal({
 }: SettingsModalProps) {
   const [leaveStart, setLeaveStart] = useState(setup.leaveStart);
   const [babyBirth, setBabyBirth] = useState(setup.babyBirth);
+  const [newPassword, setNewPassword] = useState("");
+  const [passwordStatus, setPasswordStatus] = useState<
+    "idle" | "saving" | "saved" | "error"
+  >("idle");
+
+  async function handleSetPassword() {
+    if (newPassword.length < 6) {
+      setPasswordStatus("error");
+      return;
+    }
+    setPasswordStatus("saving");
+    const supabase = createClient();
+    const { error } = await supabase.auth.updateUser({ password: newPassword });
+    if (error) {
+      setPasswordStatus("error");
+    } else {
+      setNewPassword("");
+      setPasswordStatus("saved");
+    }
+  }
 
   function handleSave(e: React.FormEvent) {
     e.preventDefault();
@@ -77,6 +98,68 @@ export default function SettingsModal({
             </button>
           </div>
         </form>
+
+        <div
+          style={{
+            marginTop: "22px",
+            paddingTop: "18px",
+            borderTop: "1px solid var(--border)",
+          }}
+        >
+          <div className="field">
+            <label htmlFor="newPasswordInput">
+              {isFirstRun ? "Set a password" : "Change password"}
+            </label>
+            <input
+              id="newPasswordInput"
+              type="password"
+              placeholder="At least 6 characters"
+              value={newPassword}
+              onChange={(e) => {
+                setNewPassword(e.target.value);
+                setPasswordStatus("idle");
+              }}
+            />
+            <div className="hint">
+              Lets you sign in with email + password instead of a magic
+              link next time.
+            </div>
+          </div>
+          <div className="modal-actions" style={{ marginTop: "10px" }}>
+            {passwordStatus === "saved" && (
+              <span
+                style={{
+                  fontSize: "12.5px",
+                  color: "var(--success)",
+                  marginRight: "auto",
+                  alignSelf: "center",
+                }}
+              >
+                Password updated.
+              </span>
+            )}
+            {passwordStatus === "error" && (
+              <span
+                style={{
+                  fontSize: "12.5px",
+                  color: "var(--danger)",
+                  marginRight: "auto",
+                  alignSelf: "center",
+                }}
+              >
+                Password must be at least 6 characters.
+              </span>
+            )}
+            <button
+              type="button"
+              className="btn-primary"
+              disabled={passwordStatus === "saving" || !newPassword}
+              onClick={handleSetPassword}
+            >
+              {passwordStatus === "saving" ? "Saving…" : "Update password"}
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );

@@ -595,6 +595,17 @@ input, select {
   color: var(--text-muted);
   line-height: 1.5;
 }
+.login-card .muted button.link {
+  width: auto;
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--accent);
+  font-size: 13.5px;
+  font-weight: 400;
+  text-decoration: underline;
+}
+.login-card .muted button.link:hover { background: none; }
 .login-card .error {
   font-size: 12.5px;
   color: var(--danger);
