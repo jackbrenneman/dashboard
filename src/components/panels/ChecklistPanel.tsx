@@ -143,7 +143,19 @@ export default function ChecklistPanel({
         </button>
       </form>
 
-      {!loading && items.length === 0 ? (
+      {loading ? (
+        <ul className="todo-list" aria-hidden="true">
+          {[70, 58, 64].map((width, i) => (
+            <li key={i} className="todo-item todo-skeleton-item">
+              <span className="skeleton todo-skeleton-check" />
+              <span
+                className="skeleton todo-skeleton-bar"
+                style={{ flex: `0 0 ${width}%` }}
+              />
+            </li>
+          ))}
+        </ul>
+      ) : items.length === 0 ? (
         <p className="empty-state">{emptyText}</p>
       ) : (
         <ul className="todo-list" ref={listRef} onPointerDown={handlePointerDown}>

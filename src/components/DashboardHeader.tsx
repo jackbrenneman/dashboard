@@ -74,23 +74,32 @@ export default function DashboardHeader() {
       </div>
 
       <div className="hero">
-        <h1>
-          Day <span>{dayNum}</span>
-        </h1>
-        <p className="muted">
-          {dateStr}
-          {ageText ? (
-            ` · ${ageText}`
-          ) : (
-            <>
-              {" · "}
-              <button className="link" onClick={() => setManualOpen(true)}>
-                add birth date
-              </button>{" "}
-              to track age
-            </>
-          )}
-        </p>
+        {loading ? (
+          <>
+            <div className="skeleton skeleton-hero-title" />
+            <div className="skeleton skeleton-hero-sub" />
+          </>
+        ) : (
+          <>
+            <h1>
+              Day <span>{dayNum}</span>
+            </h1>
+            <p className="muted">
+              {dateStr}
+              {ageText ? (
+                ` · ${ageText}`
+              ) : (
+                <>
+                  {" · "}
+                  <button className="link" onClick={() => setManualOpen(true)}>
+                    add birth date
+                  </button>{" "}
+                  to track age
+                </>
+              )}
+            </p>
+          </>
+        )}
       </div>
 
       {modalOpen && (

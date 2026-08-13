@@ -2,18 +2,11 @@
 
 import { useState } from "react";
 import { useFoods } from "@/hooks/useFoods";
-import { shortDate } from "@/lib/dates";
+import FoodItem from "@/components/panels/FoodItem";
 import type { Reaction } from "@/lib/types";
 
-const REACTION_ICON: Record<string, string> = {
-  liked: "😊",
-  neutral: "😐",
-  disliked: "😖",
-  reaction: "⚠️",
-};
-
 export default function FoodLog() {
-  const { foods, loading, addFood, deleteFood } = useFoods();
+  const { foods, loading, addFood, updateFood, deleteFood } = useFoods();
   const [name, setName] = useState("");
   const [reaction, setReaction] = useState<Reaction>(null);
 
@@ -74,21 +67,12 @@ export default function FoodLog() {
       ) : (
         <ul className="food-list">
           {foods.map((f) => (
-            <li key={f.id} className="food-item">
-              <span className="food-date">{shortDate(f.logged_on)}</span>
-              <span className="food-name">{f.food}</span>
-              <span className="food-reaction">
-                {f.reaction ? REACTION_ICON[f.reaction] : ""}
-              </span>
-              <button
-                type="button"
-                className="del-btn"
-                aria-label="Delete entry"
-                onClick={() => deleteFood(f.id)}
-              >
-                ✕
-              </button>
-            </li>
+            <FoodItem
+              key={f.id}
+              food={f}
+              onUpdate={updateFood}
+              onDelete={deleteFood}
+            />
           ))}
         </ul>
       )}

@@ -179,6 +179,38 @@ input, select {
   line-height: 1.5;
 }
 
+/* Loading skeletons */
+@keyframes skeleton-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.45; }
+}
+.skeleton {
+  background: var(--border);
+  border-radius: 4px;
+  animation: skeleton-pulse 1.4s ease-in-out infinite;
+}
+.skeleton-hero-title {
+  width: 108px;
+  height: 24px;
+  margin: 1px 0 8px;
+}
+.skeleton-hero-sub {
+  width: 190px;
+  height: 14px;
+}
+.todo-skeleton-item {
+  pointer-events: none;
+}
+.todo-skeleton-check {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+}
+.todo-skeleton-bar {
+  height: 13px;
+}
+
 /* To dos */
 .add-row {
   display: flex;
@@ -499,6 +531,37 @@ input, select {
 .food-name { flex: 1; }
 .food-reaction { font-size: 14px; }
 
+.food-item-editing { padding: 10px 2px; }
+.food-edit {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  width: 100%;
+  align-items: center;
+}
+.food-edit input,
+.food-edit select {
+  padding: 7px 9px;
+  border: 1px solid var(--border-strong);
+  border-radius: 6px;
+  font-size: 13px;
+  background: #fff;
+  color: var(--text);
+}
+.food-edit-date { flex: 0 0 auto; }
+.food-edit-name { flex: 1 1 120px; min-width: 0; }
+.food-edit-reaction { flex: 1 1 100%; }
+.food-edit-actions {
+  display: flex;
+  gap: 8px;
+  margin-left: auto;
+}
+.food-edit-actions .btn-primary,
+.food-edit-actions .btn-text {
+  padding: 6px 12px;
+  font-size: 12.5px;
+}
+
 /* Food Prep */
 .week-label {
   font-size: 12.5px;
@@ -567,7 +630,8 @@ input, select {
   margin-bottom: 6px;
   color: var(--text);
 }
-.login-card input[type=email] {
+.login-card input[type=email],
+.login-card input[type=password] {
   width: 100%;
   padding: 9px 10px;
   border: 1px solid var(--border-strong);
@@ -576,6 +640,9 @@ input, select {
   background: #fff;
   color: var(--text);
   margin-bottom: 14px;
+}
+.login-card input[type=password] {
+  margin-bottom: 20px;
 }
 .login-card button {
   width: 100%;

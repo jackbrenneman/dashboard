@@ -52,6 +52,31 @@ export function useFoods() {
     [supabase]
   );
 
+  const updateFood = useCallback(
+    async (
+      id: string,
+      updates: { food: string; reaction: Reaction; logged_on: string }
+    ) => {
+      const trimmed = updates.food.trim();
+      if (!trimmed || !updates.logged_on) return;
+      const next = { ...updates, food: trimmed };
+
+      const previous = foods;
+      setFoods((prev) =>
+        prev
+          .map((f) => (f.id === id ? { ...f, ...next } : f))
+          .sort((a, b) => (a.logged_on < b.logged_on ? 1 : a.logged_on > b.logged_on ? -1 : 0))
+      );
+
+      const { error } = await supabase
+        .from("foods_tried")
+        .update(next)
+        .eq("id", id);
+      if (error) setFoods(previous);
+    },
+    [foods, supabase]
+  );
+
   const deleteFood = useCallback(
     async (id: string) => {
       const previous = foods;
@@ -62,5 +87,5 @@ export function useFoods() {
     [foods, supabase]
   );
 
-  return { foods, loading, addFood, deleteFood };
+  return { foods, loading, addFood, updateFood, deleteFood };
 }
