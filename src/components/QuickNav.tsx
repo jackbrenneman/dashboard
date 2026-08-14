@@ -4,6 +4,7 @@ import type { PanelKey } from "@/hooks/usePanelCollapse";
 
 const LINKS: { key: PanelKey; label: string; targetId: string }[] = [
   { key: "todo", label: "To Dos", targetId: "panel-todo" },
+  { key: "calendar", label: "Calendar", targetId: "panel-calendar" },
   { key: "solids", label: "Solids", targetId: "panel-solids" },
   { key: "foodprep", label: "Food Prep", targetId: "panel-foodprep" },
 ];

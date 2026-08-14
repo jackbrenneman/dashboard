@@ -562,6 +562,173 @@ input, select {
   font-size: 12.5px;
 }
 
+/* Calendar */
+.cal-connect {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 8px 0;
+}
+.cal-connect-text {
+  font-size: 13.5px;
+  color: var(--text-muted);
+  line-height: 1.5;
+  margin: 0;
+  max-width: 460px;
+}
+.cal-skeleton { padding: 4px 0; }
+
+.cal-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+.cal-nav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.cal-nav-btn {
+  background: transparent;
+  border: 1px solid var(--border-strong);
+  border-radius: 6px;
+  width: 28px;
+  height: 28px;
+  font-size: 16px;
+  line-height: 1;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.cal-nav-btn:hover { background: #EDEEF1; }
+.cal-month-label {
+  font-size: 14px;
+  font-weight: 600;
+  min-width: 132px;
+  text-align: center;
+}
+.cal-today-btn {
+  background: transparent;
+  border: 1px solid var(--border-strong);
+  border-radius: 6px;
+  padding: 5px 10px;
+  font-size: 12.5px;
+  color: var(--text);
+}
+.cal-today-btn:hover { background: #EDEEF1; }
+.cal-loading { font-size: 12px; color: var(--text-muted); }
+.cal-account {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.cal-email { font-size: 12px; color: var(--text-muted); }
+.cal-disconnect {
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--accent);
+  font-size: 12.5px;
+  text-decoration: underline;
+}
+
+.cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.cal-weekday {
+  padding: 8px 8px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-align: right;
+  background: #FAFBFC;
+  border-right: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+.cal-weekday:nth-child(7n) { border-right: none; }
+
+.cal-day {
+  min-height: 96px;
+  padding: 5px 6px 6px;
+  background: var(--card);
+  border-right: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+.cal-day:nth-child(7n) { border-right: none; }
+.cal-outside { background: #FAFBFC; }
+.cal-outside .cal-daynum { color: var(--border-strong); }
+
+.cal-daynum {
+  align-self: flex-end;
+  font-size: 12px;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+.cal-today .cal-daynum {
+  background: var(--accent);
+  color: #fff;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 5px;
+  border-radius: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+}
+
+.cal-events {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.cal-event {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  font-size: 11px;
+  line-height: 1.3;
+  padding: 1px 5px;
+  border-radius: 4px;
+  background: #EEF2FF;
+  color: var(--text);
+  min-width: 0;
+}
+.cal-event-allday { background: #ECFDF5; }
+.cal-time { color: var(--accent); font-weight: 600; flex-shrink: 0; }
+.cal-dot { color: var(--success); flex-shrink: 0; }
+.cal-event-title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+}
+.cal-more {
+  font-size: 10.5px;
+  color: var(--text-muted);
+  padding: 0 5px;
+}
+
+@media (max-width: 620px) {
+  .cal-day { min-height: 64px; padding: 4px; }
+  .cal-weekday { padding: 6px 4px; }
+  .cal-event { font-size: 10px; padding: 1px 3px; }
+}
+
 /* Food Prep */
 .week-label {
   font-size: 12.5px;

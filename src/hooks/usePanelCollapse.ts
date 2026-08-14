@@ -3,12 +3,13 @@
 import { useEffect, useState, useCallback } from "react";
 import { createClient } from "@/lib/supabase/client";
 
-export type PanelKey = "todo" | "solids" | "foodprep";
+export type PanelKey = "todo" | "calendar" | "solids" | "foodprep";
 
 type CollapseState = Record<PanelKey, boolean>;
 
 const DEFAULT_STATE: CollapseState = {
   todo: false,
+  calendar: false,
   solids: false,
   foodprep: false,
 };
@@ -22,11 +23,12 @@ export function usePanelCollapse() {
     async function load() {
       const { data } = await supabase
         .from("panel_collapse")
-        .select("todo, solids, foodprep")
+        .select("todo, calendar, solids, foodprep")
         .maybeSingle();
       if (!cancelled && data) {
         setCollapse({
           todo: data.todo,
+          calendar: data.calendar,
           solids: data.solids,
           foodprep: data.foodprep,
         });
