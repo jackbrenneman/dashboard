@@ -4,15 +4,7 @@ import Panel from "@/components/Panel";
 import CalendarMonth from "@/components/panels/CalendarMonth";
 import { useGoogleCalendar } from "@/hooks/useGoogleCalendar";
 
-type CalendarPanelProps = {
-  collapsed: boolean;
-  onToggleCollapse: () => void;
-};
-
-export default function CalendarPanel({
-  collapsed,
-  onToggleCollapse,
-}: CalendarPanelProps) {
+export default function CalendarPanel() {
   const {
     status,
     email,
@@ -32,13 +24,7 @@ export default function CalendarPanel({
   ).toLocaleDateString(undefined, { month: "long", year: "numeric" });
 
   return (
-    <Panel
-      id="panel-calendar"
-      title="Calendar"
-      wide
-      collapsed={collapsed}
-      onToggleCollapse={onToggleCollapse}
-    >
+    <Panel id="panel-calendar" title="Calendar" wide>
       {status === "loading" && (
         <div className="cal-skeleton">
           <div className="skeleton" style={{ width: 160, height: 20 }} />

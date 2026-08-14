@@ -5,12 +5,7 @@ import ChecklistPanel from "@/components/panels/ChecklistPanel";
 import { useChecklist } from "@/hooks/useChecklist";
 import { getWeekRangeLabel } from "@/lib/dates";
 
-type FoodPrepPanelProps = {
-  collapsed: boolean;
-  onToggleCollapse: () => void;
-};
-
-export default function FoodPrepPanel({ collapsed, onToggleCollapse }: FoodPrepPanelProps) {
+export default function FoodPrepPanel() {
   const {
     items,
     loading,
@@ -30,8 +25,6 @@ export default function FoodPrepPanel({ collapsed, onToggleCollapse }: FoodPrepP
       wide
       placeholder="Add a dinner or dish idea…"
       emptyText="No meals planned yet — add a few ideas for the week above."
-      collapsed={collapsed}
-      onToggleCollapse={onToggleCollapse}
       items={items}
       loading={loading}
       addItem={addItem}
