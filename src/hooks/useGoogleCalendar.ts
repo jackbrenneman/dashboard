@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { monthGridDays } from "@/lib/dates";
+import { getCached, setCached, clearCachedPrefix } from "@/lib/queryCache";
 import type { CalendarEvent } from "@/lib/google/calendar";
 
 export type CalendarStatus =
@@ -27,30 +28,46 @@ function gridRange(m: VisibleMonth): { start: string; end: string } {
   return { start: start.toISOString(), end: end.toISOString() };
 }
 
-export function useGoogleCalendar() {
-  const [status, setStatus] = useState<CalendarStatus>("loading");
-  const [email, setEmail] = useState<string | null>(null);
-  const [events, setEvents] = useState<CalendarEvent[]>([]);
-  const [eventsLoading, setEventsLoading] = useState(false);
-  const [visibleMonth, setVisibleMonth] = useState<VisibleMonth>(currentMonth);
+const STATUS_CACHE_KEY = "google:status";
+type CachedStatus = { status: CalendarStatus; email: string | null };
 
-  // Initial connection status.
+function eventsCacheKey(m: VisibleMonth): string {
+  return `google:events:${m.year}-${m.month}`;
+}
+
+export function useGoogleCalendar() {
+  const cachedStatus = getCached<CachedStatus>(STATUS_CACHE_KEY);
+  const [status, setStatus] = useState<CalendarStatus>(cachedStatus?.status ?? "loading");
+  const [email, setEmail] = useState<string | null>(cachedStatus?.email ?? null);
+  const [visibleMonth, setVisibleMonth] = useState<VisibleMonth>(currentMonth);
+  // Events fetched by the effect below, for months not already cached.
+  const [fetchedEvents, setFetchedEvents] = useState<CalendarEvent[]>([]);
+  const [eventsLoading, setEventsLoading] = useState(false);
+  // A cache hit for the visible month is read straight from the cache during
+  // render (no setState needed); a miss falls back to `fetchedEvents`.
+  const events =
+    getCached<CalendarEvent[]>(eventsCacheKey(visibleMonth)) ?? fetchedEvents;
+
+  // Initial connection status — skipped once cached from a previous mount.
   useEffect(() => {
+    if (getCached<CachedStatus>(STATUS_CACHE_KEY) !== undefined) return;
     let cancelled = false;
     async function loadStatus() {
       try {
         const res = await fetch("/api/google/status");
         const data = await res.json();
         if (cancelled) return;
+        let next: CachedStatus;
         if (!data.connected) {
-          setStatus("disconnected");
+          next = { status: "disconnected", email: null };
         } else if (data.needsReconnect) {
-          setStatus("needs-reconnect");
-          setEmail(data.email ?? null);
+          next = { status: "needs-reconnect", email: data.email ?? null };
         } else {
-          setStatus("connected");
-          setEmail(data.email ?? null);
+          next = { status: "connected", email: data.email ?? null };
         }
+        setStatus(next.status);
+        setEmail(next.email);
+        setCached(STATUS_CACHE_KEY, next);
       } catch {
         if (!cancelled) setStatus("disconnected");
       }
@@ -61,9 +78,12 @@ export function useGoogleCalendar() {
     };
   }, []);
 
-  // Fetch events for the visible month whenever it changes while connected.
+  // Fetch events for the visible month whenever it changes while connected,
+  // skipping months already cached from a previous mount of this tab.
   useEffect(() => {
     if (status !== "connected") return;
+    const key = eventsCacheKey(visibleMonth);
+    if (getCached<CalendarEvent[]>(key) !== undefined) return;
     let cancelled = false;
     async function loadEvents() {
       setEventsLoading(true);
@@ -75,15 +95,22 @@ export function useGoogleCalendar() {
         if (res.status === 409) {
           const data = await res.json();
           if (!cancelled) {
-            setStatus(data.needsReconnect ? "needs-reconnect" : "disconnected");
-            setEvents([]);
+            const nextStatus: CalendarStatus = data.needsReconnect
+              ? "needs-reconnect"
+              : "disconnected";
+            setStatus(nextStatus);
+            setCached(STATUS_CACHE_KEY, { status: nextStatus, email });
+            setFetchedEvents([]);
           }
           return;
         }
         const data = await res.json();
-        if (!cancelled) setEvents(data.events ?? []);
+        if (!cancelled) {
+          setFetchedEvents(data.events ?? []);
+          setCached(key, data.events ?? []);
+        }
       } catch {
-        if (!cancelled) setEvents([]);
+        if (!cancelled) setFetchedEvents([]);
       } finally {
         if (!cancelled) setEventsLoading(false);
       }
@@ -92,7 +119,7 @@ export function useGoogleCalendar() {
     return () => {
       cancelled = true;
     };
-  }, [status, visibleMonth]);
+  }, [status, visibleMonth, email]);
 
   const connect = useCallback(() => {
     window.location.href = "/api/google/connect";
@@ -102,7 +129,9 @@ export function useGoogleCalendar() {
     await fetch("/api/google/disconnect", { method: "POST" });
     setStatus("disconnected");
     setEmail(null);
-    setEvents([]);
+    setFetchedEvents([]);
+    setCached(STATUS_CACHE_KEY, { status: "disconnected", email: null });
+    clearCachedPrefix("google:events:");
   }, []);
 
   const goToMonth = useCallback((delta: number) => {

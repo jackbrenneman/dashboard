@@ -39,13 +39,10 @@ export default function DashboardHeader() {
 
   const today = new Date();
   const dateStr = today.toLocaleDateString(undefined, {
-    weekday: "short",
-    month: "short",
+    weekday: "long",
+    month: "long",
     day: "numeric",
   });
-
-  const leaveStart = setup.leaveStart ? new Date(`${setup.leaveStart}T00:00:00`) : null;
-  const dayNum = leaveStart ? Math.max(1, daysBetween(leaveStart, new Date()) + 1) : "—";
 
   let ageText: string | null = null;
   if (setup.babyBirth) {
@@ -81,30 +78,24 @@ export default function DashboardHeader() {
           </>
         ) : (
           <>
-            <h1>
-              Day <span>{dayNum}</span>
-            </h1>
-            <p className="muted">
-              {dateStr}
-              {ageText ? (
-                ` · ${ageText}`
-              ) : (
-                <>
-                  {" · "}
-                  <button className="link" onClick={() => setManualOpen(true)}>
-                    add birth date
-                  </button>{" "}
-                  to track age
-                </>
-              )}
-            </p>
+            <h1>{dateStr}</h1>
+            {ageText ? (
+              <p className="muted">{ageText}</p>
+            ) : (
+              <p className="muted">
+                <button className="link" onClick={() => setManualOpen(true)}>
+                  add birth date
+                </button>{" "}
+                to track age
+              </p>
+            )}
           </>
         )}
       </div>
 
       {modalOpen && (
         <SettingsModal
-          key={`${setup.leaveStart}|${setup.babyBirth}`}
+          key={setup.babyBirth}
           isFirstRun={isFirstRun}
           setup={setup}
           onSave={(next) => {

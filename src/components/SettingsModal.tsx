@@ -20,7 +20,6 @@ export default function SettingsModal({
   onSave,
   onClose,
 }: SettingsModalProps) {
-  const [leaveStart, setLeaveStart] = useState(setup.leaveStart);
   const [babyBirth, setBabyBirth] = useState(setup.babyBirth);
   const [newPassword, setNewPassword] = useState("");
   const [passwordStatus, setPasswordStatus] = useState<
@@ -45,7 +44,7 @@ export default function SettingsModal({
 
   function handleSave(e: React.FormEvent) {
     e.preventDefault();
-    onSave({ leaveStart, babyBirth });
+    onSave({ babyBirth });
   }
 
   return (
@@ -68,15 +67,6 @@ export default function SettingsModal({
             : "Update anytime — changes apply right away."}
         </p>
         <form onSubmit={handleSave}>
-          <div className="field">
-            <label htmlFor="leaveStartInput">Leave start date</label>
-            <input
-              id="leaveStartInput"
-              type="date"
-              value={leaveStart}
-              onChange={(e) => setLeaveStart(e.target.value)}
-            />
-          </div>
           <div className="field">
             <label htmlFor="babyBirthInput">Baby&apos;s birth date</label>
             <input

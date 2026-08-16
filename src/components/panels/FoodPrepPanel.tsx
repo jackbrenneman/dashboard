@@ -33,9 +33,7 @@ export default function FoodPrepPanel() {
       updateItemText={updateItemText}
       reorderItems={reorderItems}
       aboveList={
-        <p className="week-label">
-          {getWeekRangeLabel()} — dinners &amp; dishes to make, in any order
-        </p>
+        <p className="week-label">{getWeekRangeLabel()}</p>
       }
       belowList={
         confirmingClear ? (
