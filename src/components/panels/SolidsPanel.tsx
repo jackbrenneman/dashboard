@@ -3,20 +3,9 @@
 import Panel from "@/components/Panel";
 import FoodLog from "@/components/panels/FoodLog";
 
-type SolidsPanelProps = {
-  collapsed: boolean;
-  onToggleCollapse: () => void;
-};
-
-export default function SolidsPanel({ collapsed, onToggleCollapse }: SolidsPanelProps) {
+export default function SolidsPanel() {
   return (
-    <Panel
-      id="panel-solids"
-      title="Solids"
-      wide
-      collapsed={collapsed}
-      onToggleCollapse={onToggleCollapse}
-    >
+    <Panel id="panel-solids" title="Solids" wide>
       <p className="solids-sub">
         General guidance below — links go to the original source so you can
         confirm anything against your pediatrician&apos;s advice.

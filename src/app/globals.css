@@ -116,6 +116,11 @@ input, select {
   transition: background 0.15s ease;
 }
 .nav-link:hover { background: #EDEEF1; }
+.nav-link.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
 
 /* Grid */
 .grid {
@@ -145,31 +150,11 @@ input, select {
   margin: 0 0 14px;
   padding-bottom: 12px;
   border-bottom: 1px solid var(--border);
-  cursor: pointer;
 }
 .panel-header h2 {
   font-size: 16px;
   font-weight: 600;
   margin: 0;
-}
-.chevron-btn {
-  background: none;
-  border: none;
-  color: var(--text-muted);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 2px;
-  flex-shrink: 0;
-}
-.chevron {
-  transition: transform 0.15s ease;
-}
-.panel-header.collapsed .chevron {
-  transform: rotate(-90deg);
-}
-.panel-body.collapsed {
-  display: none;
 }
 
 .empty-state {

@@ -11,8 +11,6 @@ type ChecklistPanelProps = {
   wide?: boolean;
   placeholder: string;
   emptyText: string;
-  collapsed: boolean;
-  onToggleCollapse: () => void;
   items: ChecklistItemType[];
   loading: boolean;
   addItem: (text: string) => void;
@@ -30,8 +28,6 @@ export default function ChecklistPanel({
   wide,
   placeholder,
   emptyText,
-  collapsed,
-  onToggleCollapse,
   items,
   loading,
   addItem,
@@ -121,13 +117,7 @@ export default function ChecklistPanel({
   }
 
   return (
-    <Panel
-      id={id}
-      title={title}
-      wide={wide}
-      collapsed={collapsed}
-      onToggleCollapse={onToggleCollapse}
-    >
+    <Panel id={id} title={title} wide={wide}>
       {aboveList}
 
       <form className="add-row" onSubmit={submit}>

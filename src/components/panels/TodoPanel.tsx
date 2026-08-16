@@ -3,12 +3,7 @@
 import ChecklistPanel from "@/components/panels/ChecklistPanel";
 import { useChecklist } from "@/hooks/useChecklist";
 
-type TodoPanelProps = {
-  collapsed: boolean;
-  onToggleCollapse: () => void;
-};
-
-export default function TodoPanel({ collapsed, onToggleCollapse }: TodoPanelProps) {
+export default function TodoPanel() {
   const {
     items,
     loading,
@@ -25,8 +20,6 @@ export default function TodoPanel({ collapsed, onToggleCollapse }: TodoPanelProp
       title="To Dos"
       placeholder="Add a task…"
       emptyText="Nothing here yet — add your first task above."
-      collapsed={collapsed}
-      onToggleCollapse={onToggleCollapse}
       items={items}
       loading={loading}
       addItem={addItem}
