@@ -11,7 +11,6 @@ export default function DashboardLayout({
       <DashboardHeader />
       <SectionNav />
       <main>{children}</main>
-      <p className="footer-note">Stored privately — nothing here is shared.</p>
     </div>
   );
 }

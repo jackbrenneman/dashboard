@@ -443,49 +443,6 @@ input, select {
 .wide-panel {
   margin-top: 18px;
 }
-.solids-sub {
-  margin-bottom: 4px;
-  color: var(--text-muted);
-  font-size: 12.5px;
-  line-height: 1.5;
-}
-.solids-layout {
-  display: grid;
-  grid-template-columns: 1.3fr 1fr;
-  gap: 26px;
-}
-@media (max-width: 900px) {
-  .solids-layout { grid-template-columns: 1fr; }
-}
-.solids-info {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 18px;
-}
-@media (max-width: 620px) {
-  .solids-info { grid-template-columns: 1fr; }
-}
-.solids-block h4 {
-  font-size: 13px;
-  font-weight: 600;
-  margin: 0 0 8px;
-}
-.solids-block ul {
-  margin: 0 0 6px;
-  padding-left: 18px;
-}
-.solids-block li {
-  font-size: 12.5px;
-  color: var(--text);
-  line-height: 1.5;
-  margin-bottom: 3px;
-}
-.source-link {
-  font-size: 11px;
-  color: var(--accent);
-  text-decoration: none;
-}
-.source-link:hover { text-decoration: underline; }
 
 .solids-tracker h3 {
   font-size: 13px;

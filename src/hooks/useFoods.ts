@@ -2,14 +2,23 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { getCached, setCached } from "@/lib/queryCache";
 import type { FoodEntry, Reaction } from "@/lib/types";
 
+const CACHE_KEY = "foods";
+
 export function useFoods() {
-  const [foods, setFoods] = useState<FoodEntry[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [foods, setFoods] = useState<FoodEntry[]>(
+    () => getCached<FoodEntry[]>(CACHE_KEY) ?? []
+  );
+  const [loading, setLoading] = useState(
+    () => getCached<FoodEntry[]>(CACHE_KEY) === undefined
+  );
   const supabase = createClient();
 
   useEffect(() => {
+    // Already warm from a previous mount of this tab — skip the refetch.
+    if (getCached<FoodEntry[]>(CACHE_KEY) !== undefined) return;
     let cancelled = false;
     async function load() {
       const { data } = await supabase
@@ -19,6 +28,7 @@ export function useFoods() {
         .order("created_at", { ascending: false });
       if (!cancelled) {
         setFoods(data ?? []);
+        setCached(CACHE_KEY, data ?? []);
         setLoading(false);
       }
     }
@@ -27,6 +37,14 @@ export function useFoods() {
       cancelled = true;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const applyFoods = useCallback((updater: (prev: FoodEntry[]) => FoodEntry[]) => {
+    setFoods((prev) => {
+      const next = updater(prev);
+      setCached(CACHE_KEY, next);
+      return next;
+    });
   }, []);
 
   const addFood = useCallback(
@@ -46,10 +64,10 @@ export function useFoods() {
         .single();
 
       if (!error && data) {
-        setFoods((prev) => [data, ...prev]);
+        applyFoods((prev) => [data, ...prev]);
       }
     },
-    [supabase]
+    [supabase, applyFoods]
   );
 
   const updateFood = useCallback(
@@ -62,7 +80,7 @@ export function useFoods() {
       const next = { ...updates, food: trimmed };
 
       const previous = foods;
-      setFoods((prev) =>
+      applyFoods((prev) =>
         prev
           .map((f) => (f.id === id ? { ...f, ...next } : f))
           .sort((a, b) => (a.logged_on < b.logged_on ? 1 : a.logged_on > b.logged_on ? -1 : 0))
@@ -72,19 +90,19 @@ export function useFoods() {
         .from("foods_tried")
         .update(next)
         .eq("id", id);
-      if (error) setFoods(previous);
+      if (error) applyFoods(() => previous);
     },
-    [foods, supabase]
+    [foods, supabase, applyFoods]
   );
 
   const deleteFood = useCallback(
     async (id: string) => {
       const previous = foods;
-      setFoods((prev) => prev.filter((f) => f.id !== id));
+      applyFoods((prev) => prev.filter((f) => f.id !== id));
       const { error } = await supabase.from("foods_tried").delete().eq("id", id);
-      if (error) setFoods(previous);
+      if (error) applyFoods(() => previous);
     },
-    [foods, supabase]
+    [foods, supabase, applyFoods]
   );
 
   return { foods, loading, addFood, updateFood, deleteFood };

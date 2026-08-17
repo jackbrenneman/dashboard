@@ -2,16 +2,24 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { getCached, setCached } from "@/lib/queryCache";
 import type { ChecklistItem } from "@/lib/types";
 
 // Shared behavior for any reorderable checklist table (todos, meals) —
 // same columns (id, text, done, position), same CRUD + drag-reorder rules.
 export function useChecklist(table: "todos" | "meals") {
-  const [items, setItems] = useState<ChecklistItem[]>([]);
-  const [loading, setLoading] = useState(true);
+  const cacheKey = `checklist:${table}`;
+  const [items, setItems] = useState<ChecklistItem[]>(
+    () => getCached<ChecklistItem[]>(cacheKey) ?? []
+  );
+  const [loading, setLoading] = useState(
+    () => getCached<ChecklistItem[]>(cacheKey) === undefined
+  );
   const supabase = createClient();
 
   useEffect(() => {
+    // Already warm from a previous mount of this tab — skip the refetch.
+    if (getCached<ChecklistItem[]>(cacheKey) !== undefined) return;
     let cancelled = false;
     async function load() {
       const { data } = await supabase
@@ -20,6 +28,7 @@ export function useChecklist(table: "todos" | "meals") {
         .order("position", { ascending: true });
       if (!cancelled) {
         setItems(data ?? []);
+        setCached(cacheKey, data ?? []);
         setLoading(false);
       }
     }
@@ -29,6 +38,19 @@ export function useChecklist(table: "todos" | "meals") {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [table]);
+
+  // Every mutation below routes through here so the cache stays in sync,
+  // keeping the next tab switch's initial render up to date.
+  const applyItems = useCallback(
+    (updater: (prev: ChecklistItem[]) => ChecklistItem[]) => {
+      setItems((prev) => {
+        const next = updater(prev);
+        setCached(cacheKey, next);
+        return next;
+      });
+    },
+    [cacheKey]
+  );
 
   const addItem = useCallback(
     async (text: string) => {
@@ -50,10 +72,10 @@ export function useChecklist(table: "todos" | "meals") {
         .single();
 
       if (!error && data) {
-        setItems((prev) => [...prev, data]);
+        applyItems((prev) => [...prev, data]);
       }
     },
-    [items, supabase, table]
+    [items, supabase, table, applyItems]
   );
 
   const toggleItem = useCallback(
@@ -62,7 +84,7 @@ export function useChecklist(table: "todos" | "meals") {
       if (!current) return;
       const nextDone = !current.done;
 
-      setItems((prev) =>
+      applyItems((prev) =>
         prev.map((i) => (i.id === id ? { ...i, done: nextDone } : i))
       );
       const { error } = await supabase
@@ -70,22 +92,22 @@ export function useChecklist(table: "todos" | "meals") {
         .update({ done: nextDone })
         .eq("id", id);
       if (error) {
-        setItems((prev) =>
+        applyItems((prev) =>
           prev.map((i) => (i.id === id ? { ...i, done: !nextDone } : i))
         );
       }
     },
-    [items, supabase, table]
+    [items, supabase, table, applyItems]
   );
 
   const deleteItem = useCallback(
     async (id: string) => {
       const previous = items;
-      setItems((prev) => prev.filter((i) => i.id !== id));
+      applyItems((prev) => prev.filter((i) => i.id !== id));
       const { error } = await supabase.from(table).delete().eq("id", id);
-      if (error) setItems(previous);
+      if (error) applyItems(() => previous);
     },
-    [items, supabase, table]
+    [items, supabase, table, applyItems]
   );
 
   const updateItemText = useCallback(
@@ -93,16 +115,16 @@ export function useChecklist(table: "todos" | "meals") {
       const trimmed = newText.trim();
       if (!trimmed) return;
       const previous = items;
-      setItems((prev) =>
+      applyItems((prev) =>
         prev.map((i) => (i.id === id ? { ...i, text: trimmed } : i))
       );
       const { error } = await supabase
         .from(table)
         .update({ text: trimmed })
         .eq("id", id);
-      if (error) setItems(previous);
+      if (error) applyItems(() => previous);
     },
-    [items, supabase, table]
+    [items, supabase, table, applyItems]
   );
 
   const reorderItems = useCallback(
@@ -116,28 +138,28 @@ export function useChecklist(table: "todos" | "meals") {
         })
         .filter((i): i is ChecklistItem => i !== null);
 
-      setItems(reordered);
+      applyItems(() => reordered);
 
       const results = await Promise.all(
         reordered.map((i) =>
           supabase.from(table).update({ position: i.position }).eq("id", i.id)
         )
       );
-      if (results.some((r) => r.error)) setItems(previous);
+      if (results.some((r) => r.error)) applyItems(() => previous);
     },
-    [items, supabase, table]
+    [items, supabase, table, applyItems]
   );
 
   const clearAll = useCallback(async () => {
     const previous = items;
-    setItems([]);
+    applyItems(() => []);
     const {
       data: { user },
     } = await supabase.auth.getUser();
     if (!user) return;
     const { error } = await supabase.from(table).delete().eq("user_id", user.id);
-    if (error) setItems(previous);
-  }, [items, supabase, table]);
+    if (error) applyItems(() => previous);
+  }, [items, supabase, table, applyItems]);
 
   return {
     items,
