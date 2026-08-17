@@ -23,6 +23,14 @@ export default function CalendarPanel() {
     1
   ).toLocaleDateString(undefined, { month: "long", year: "numeric" });
 
+  // Distinct calendars represented in the visible month, for a small color
+  // legend — only worth showing once there's more than one source.
+  const legend = Array.from(
+    new Map(
+      events.map((e) => [e.calendarId, { id: e.calendarId, name: e.calendarName, color: e.color }])
+    ).values()
+  );
+
   return (
     <Panel id="panel-calendar" title="Calendar" wide>
       {status === "loading" && (
@@ -93,6 +101,20 @@ export default function CalendarPanel() {
               </button>
             </div>
           </div>
+
+          {legend.length > 1 && (
+            <div className="cal-legend">
+              {legend.map((c) => (
+                <span key={c.id} className="cal-legend-item">
+                  <span
+                    className="cal-dot"
+                    style={{ backgroundColor: c.color || "var(--accent)" }}
+                  />
+                  {c.name}
+                </span>
+              ))}
+            </div>
+          )}
 
           <CalendarMonth
             year={visibleMonth.year}

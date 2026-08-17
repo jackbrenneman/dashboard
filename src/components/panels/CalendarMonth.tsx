@@ -64,16 +64,18 @@ export default function CalendarMonth({
               {shown.map((ev) => (
                 <div
                   key={ev.id}
-                  className={`cal-event${ev.allDay ? " cal-event-allday" : ""}`}
+                  className="cal-event"
                   title={
                     ev.allDay
-                      ? ev.title
-                      : `${formatEventTime(ev.start)} ${ev.title}`
+                      ? `${ev.title} — ${ev.calendarName}`
+                      : `${formatEventTime(ev.start)} ${ev.title} — ${ev.calendarName}`
                   }
                 >
-                  {ev.allDay ? (
-                    <span className="cal-dot">•</span>
-                  ) : (
+                  <span
+                    className="cal-dot"
+                    style={{ backgroundColor: ev.color || "var(--accent)" }}
+                  />
+                  {!ev.allDay && (
                     <span className="cal-time">{formatEventTime(ev.start)}</span>
                   )}
                   <span className="cal-event-title">{ev.title}</span>

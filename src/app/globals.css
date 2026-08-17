@@ -641,18 +641,37 @@ input, select {
 .cal-event {
   display: flex;
   align-items: baseline;
-  gap: 4px;
+  gap: 5px;
   font-size: 11px;
   line-height: 1.3;
   padding: 1px 5px;
   border-radius: 4px;
-  background: #EEF2FF;
+  background: #F3F4F6;
   color: var(--text);
   min-width: 0;
 }
-.cal-event-allday { background: #ECFDF5; }
-.cal-time { color: var(--accent); font-weight: 600; flex-shrink: 0; }
-.cal-dot { color: var(--success); flex-shrink: 0; }
+.cal-time { color: var(--text); font-weight: 600; flex-shrink: 0; }
+.cal-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  align-self: center;
+}
+.cal-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+.cal-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11.5px;
+  color: var(--text-muted);
+}
+.cal-legend-item .cal-dot { width: 8px; height: 8px; }
 .cal-event-title {
   overflow: hidden;
   text-overflow: ellipsis;

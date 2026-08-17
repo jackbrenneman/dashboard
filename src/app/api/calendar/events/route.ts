@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { getValidAccessToken, NotConnectedError } from "@/lib/google/tokens";
-import { listEvents } from "@/lib/google/calendar";
+import { listAllEvents } from "@/lib/google/calendar";
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -21,7 +21,7 @@ export async function GET(request: Request) {
 
   try {
     const accessToken = await getValidAccessToken(supabase, user.id);
-    const events = await listEvents(accessToken, start, end);
+    const events = await listAllEvents(accessToken, start, end);
     return NextResponse.json({ events });
   } catch (err) {
     if (err instanceof NotConnectedError) {
