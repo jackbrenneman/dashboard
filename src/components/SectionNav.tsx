@@ -7,6 +7,8 @@ const LINKS = [
   { href: "/todos", label: "To Dos" },
   { href: "/calendar", label: "Calendar" },
   { href: "/food-prep", label: "Food Prep" },
+  { href: "/workouts", label: "Workouts" },
+  { href: "/sports", label: "Sports" },
 ];
 
 export default function SectionNav() {
