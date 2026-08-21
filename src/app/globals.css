@@ -150,6 +150,19 @@ input, select {
   line-height: 1.5;
 }
 
+.sports-league {
+  padding: 14px 0;
+  border-bottom: 1px solid var(--border);
+}
+.sports-league:first-child { padding-top: 0; }
+.sports-league:last-child { border-bottom: none; padding-bottom: 0; }
+.sports-league h3 {
+  font-size: 13px;
+  font-weight: 600;
+  margin: 0;
+}
+.sports-league .empty-state { padding: 4px 0 0; }
+
 /* Loading skeletons */
 @keyframes skeleton-pulse {
   0%, 100% { opacity: 1; }
