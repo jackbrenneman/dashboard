@@ -81,21 +81,7 @@ input, select {
 .hero h1 {
   font-size: 22px;
   font-weight: 600;
-  margin: 0 0 6px;
-}
-.hero .muted {
   margin: 0;
-  font-size: 14px;
-  color: var(--text-muted);
-}
-.hero .muted a, .hero .muted button.link {
-  background: none;
-  border: none;
-  padding: 0;
-  color: var(--accent);
-  font-size: 14px;
-  text-decoration: underline;
-  font-family: inherit;
 }
 
 /* Quick nav */
@@ -177,11 +163,7 @@ input, select {
 .skeleton-hero-title {
   width: 108px;
   height: 24px;
-  margin: 1px 0 8px;
-}
-.skeleton-hero-sub {
-  width: 190px;
-  height: 14px;
+  margin: 1px 0;
 }
 .todo-skeleton-item {
   pointer-events: none;
@@ -439,69 +421,8 @@ input, select {
   margin-top: 36px;
 }
 
-/* Solids panel */
 .wide-panel {
   margin-top: 18px;
-}
-
-.solids-tracker h3 {
-  font-size: 13px;
-  font-weight: 600;
-  margin: 0 0 10px;
-}
-.food-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  overflow-y: auto;
-  max-height: 260px;
-}
-.food-item {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 7px 2px;
-  border-bottom: 1px solid var(--border);
-  font-size: 13px;
-}
-.food-item:last-child { border-bottom: none; }
-.food-date {
-  font-size: 11px;
-  color: var(--text-muted);
-  min-width: 44px;
-}
-.food-name { flex: 1; }
-.food-reaction { font-size: 14px; }
-
-.food-item-editing { padding: 10px 2px; }
-.food-edit {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  width: 100%;
-  align-items: center;
-}
-.food-edit input,
-.food-edit select {
-  padding: 7px 9px;
-  border: 1px solid var(--border-strong);
-  border-radius: 6px;
-  font-size: 13px;
-  background: #fff;
-  color: var(--text);
-}
-.food-edit-date { flex: 0 0 auto; }
-.food-edit-name { flex: 1 1 120px; min-width: 0; }
-.food-edit-reaction { flex: 1 1 100%; }
-.food-edit-actions {
-  display: flex;
-  gap: 8px;
-  margin-left: auto;
-}
-.food-edit-actions .btn-primary,
-.food-edit-actions .btn-text {
-  padding: 6px 12px;
-  font-size: 12.5px;
 }
 
 /* Calendar */

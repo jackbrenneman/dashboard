@@ -5,12 +5,3 @@ export type ChecklistItem = {
   done: boolean;
   position: number;
 };
-
-export type Reaction = "liked" | "neutral" | "disliked" | "reaction" | null;
-
-export type FoodEntry = {
-  id: string;
-  food: string;
-  reaction: Reaction;
-  logged_on: string;
-};
