@@ -4,7 +4,6 @@ import { useState } from "react";
 import SignOutButton from "@/components/SignOutButton";
 import SettingsModal from "@/components/SettingsModal";
 import { useSetup } from "@/hooks/useSetup";
-import { daysBetween } from "@/lib/dates";
 
 function GearIcon() {
   return (
@@ -25,7 +24,7 @@ function GearIcon() {
 }
 
 export default function DashboardHeader() {
-  const { setup, loading, isFirstRun, saveSetup } = useSetup();
+  const { loading, isFirstRun, completeSetup } = useSetup();
   const [manualOpen, setManualOpen] = useState(false);
   const [dismissedFirstRun, setDismissedFirstRun] = useState(false);
 
@@ -43,15 +42,6 @@ export default function DashboardHeader() {
     month: "long",
     day: "numeric",
   });
-
-  let ageText: string | null = null;
-  if (setup.babyBirth) {
-    const birth = new Date(`${setup.babyBirth}T00:00:00`);
-    const totalDays = Math.max(0, daysBetween(birth, new Date()));
-    const months = Math.floor(totalDays / 30.44);
-    const weeks = Math.floor((totalDays - months * 30.44) / 7);
-    ageText = `${months} mo, ${weeks} wk old`;
-  }
 
   return (
     <>
@@ -72,34 +62,17 @@ export default function DashboardHeader() {
 
       <div className="hero">
         {loading ? (
-          <>
-            <div className="skeleton skeleton-hero-title" />
-            <div className="skeleton skeleton-hero-sub" />
-          </>
+          <div className="skeleton skeleton-hero-title" />
         ) : (
-          <>
-            <h1>{dateStr}</h1>
-            {ageText ? (
-              <p className="muted">{ageText}</p>
-            ) : (
-              <p className="muted">
-                <button className="link" onClick={() => setManualOpen(true)}>
-                  add birth date
-                </button>{" "}
-                to track age
-              </p>
-            )}
-          </>
+          <h1>{dateStr}</h1>
         )}
       </div>
 
       {modalOpen && (
         <SettingsModal
-          key={setup.babyBirth}
           isFirstRun={isFirstRun}
-          setup={setup}
-          onSave={(next) => {
-            saveSetup(next);
+          onSave={() => {
+            completeSetup();
             setManualOpen(false);
           }}
           onClose={closeModal}

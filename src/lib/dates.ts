@@ -7,18 +7,6 @@ function pad(n: number): string {
   return n < 10 ? `0${n}` : `${n}`;
 }
 
-export function daysBetween(a: Date, b: Date): number {
-  const start = new Date(a);
-  const end = new Date(b);
-  const ms = end.setHours(0, 0, 0, 0) - start.setHours(0, 0, 0, 0);
-  return Math.round(ms / 86400000);
-}
-
-export function shortDate(iso: string): string {
-  const d = new Date(`${iso}T00:00:00`);
-  return d.toLocaleDateString(undefined, { month: "short", day: "numeric" });
-}
-
 // Local "YYYY-MM-DD" key for bucketing events into calendar day cells.
 export function localDateKey(d: Date): string {
   return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
