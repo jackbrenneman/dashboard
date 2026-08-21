@@ -4,9 +4,9 @@ import { decrypt as decryptWith, encrypt as encryptWith } from "@/lib/crypto";
 // own encryption key.
 
 export function encrypt(plaintext: string): string {
-  return encryptWith(plaintext, "GOOGLE_TOKEN_ENC_KEY");
+  return encryptWith(plaintext, "STRAVA_TOKEN_ENC_KEY");
 }
 
 export function decrypt(payload: string): string {
-  return decryptWith(payload, "GOOGLE_TOKEN_ENC_KEY");
+  return decryptWith(payload, "STRAVA_TOKEN_ENC_KEY");
 }
