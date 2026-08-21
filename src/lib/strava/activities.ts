@@ -21,9 +21,9 @@ type SummaryActivity = {
   start_date_local: string;
 };
 
-// Recent activities, newest first (Strava's default order), covering the
-// last `sinceDays` days. One request, no pagination — plenty for a glance
-// view given the app's rate limits and a single-user training volume.
+// Recent activities covering the last `sinceDays` days. One request, no
+// pagination — plenty for a glance view given the app's rate limits and a
+// single-user training volume.
 export async function listRecentActivities(
   accessToken: string,
   sinceDays = 30,
@@ -42,12 +42,20 @@ export async function listRecentActivities(
     throw new Error(`Strava activities request failed (${res.status})`);
   }
   const data: SummaryActivity[] = await res.json();
-  return data.map((a) => ({
-    id: a.id,
-    name: a.name,
-    sportType: a.sport_type || a.type || "Workout",
-    distanceMeters: a.distance,
-    movingTimeSeconds: a.moving_time,
-    startDateLocal: a.start_date_local,
-  }));
+  // Strava sorts ascending (oldest first) whenever `after` is passed, the
+  // opposite of its no-`after` default — sort explicitly rather than rely
+  // on that, so callers always get newest-first regardless.
+  return data
+    .map((a) => ({
+      id: a.id,
+      name: a.name,
+      sportType: a.sport_type || a.type || "Workout",
+      distanceMeters: a.distance,
+      movingTimeSeconds: a.moving_time,
+      startDateLocal: a.start_date_local,
+    }))
+    .sort(
+      (a, b) =>
+        new Date(b.startDateLocal).getTime() - new Date(a.startDateLocal).getTime()
+    );
 }
