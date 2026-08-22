@@ -18,7 +18,23 @@ export default function WorkoutsPanel() {
   } = useStrava();
 
   return (
-    <Panel id="panel-workouts" title="Workouts" wide>
+    <Panel
+      id="panel-workouts"
+      title="Workouts"
+      wide
+      actions={
+        status === "connected" ? (
+          <div className="cal-account">
+            <button type="button" className="cal-disconnect" onClick={refresh}>
+              Refresh
+            </button>
+            <button type="button" className="cal-disconnect" onClick={disconnect}>
+              Disconnect
+            </button>
+          </div>
+        ) : undefined
+      }
+    >
       {status === "loading" && (
         <div className="cal-skeleton">
           <div className="skeleton" style={{ width: 160, height: 20 }} />
@@ -50,32 +66,19 @@ export default function WorkoutsPanel() {
         </div>
       )}
 
-      {status === "connected" && (
-        <>
-          <div className="cal-toolbar">
-            <div className="cal-account">
-              <button type="button" className="cal-disconnect" onClick={refresh}>
-                Refresh
-              </button>
-              <button type="button" className="cal-disconnect" onClick={disconnect}>
-                Disconnect
-              </button>
-            </div>
+      {status === "connected" &&
+        (activitiesLoading ? (
+          <div className="cal-skeleton">
+            <div className="skeleton" style={{ height: 100 }} />
           </div>
-          {activitiesLoading ? (
-            <div className="cal-skeleton">
-              <div className="skeleton" style={{ height: 100 }} />
-            </div>
-          ) : (
-            <ActivityList
-              activities={activities}
-              hasMore={hasMore}
-              loadingMore={loadingMore}
-              onLoadMore={loadMore}
-            />
-          )}
-        </>
-      )}
+        ) : (
+          <ActivityList
+            activities={activities}
+            hasMore={hasMore}
+            loadingMore={loadingMore}
+            onLoadMore={loadMore}
+          />
+        ))}
     </Panel>
   );
 }

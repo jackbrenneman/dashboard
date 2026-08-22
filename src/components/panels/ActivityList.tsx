@@ -94,32 +94,10 @@ export default function ActivityList({
   loadingMore,
   onLoadMore,
 }: ActivityListProps) {
-  const weekStart = mondayOf(new Date());
-  const thisWeek = activities.filter(
-    (a) => new Date(a.startDateLocal) >= weekStart
-  );
-  const weeklyDistance = thisWeek.reduce((sum, a) => sum + a.distanceMeters, 0);
-  const weeklyTime = thisWeek.reduce((sum, a) => sum + a.movingTimeSeconds, 0);
-
   const weeks = groupByWeek(activities);
 
   return (
     <div>
-      <div className="wo-stats">
-        <div className="wo-stat">
-          <span className="wo-stat-value">{thisWeek.length}</span>
-          <span className="wo-stat-label">this week</span>
-        </div>
-        <div className="wo-stat">
-          <span className="wo-stat-value">{formatDistance(weeklyDistance)}</span>
-          <span className="wo-stat-label">distance</span>
-        </div>
-        <div className="wo-stat">
-          <span className="wo-stat-value">{formatDuration(weeklyTime)}</span>
-          <span className="wo-stat-label">moving time</span>
-        </div>
-      </div>
-
       {weeks.length === 0 ? (
         <p className="empty-state">No activities in the last 30 days.</p>
       ) : (

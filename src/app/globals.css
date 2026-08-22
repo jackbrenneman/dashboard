@@ -627,30 +627,6 @@ input, select {
 }
 
 /* Workouts */
-.wo-stats {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 16px;
-}
-.wo-stat {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  padding: 10px 12px;
-  background: #FAFBFC;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-}
-.wo-stat-value {
-  font-size: 18px;
-  font-weight: 600;
-}
-.wo-stat-label {
-  font-size: 11px;
-  color: var(--text-muted);
-}
-
 .wo-week {
   padding-top: 14px;
   border-top: 1px solid var(--border);
@@ -719,7 +695,6 @@ input, select {
   .wo-activities { grid-template-columns: repeat(2, 1fr); }
 }
 @media (max-width: 620px) {
-  .wo-stats { flex-wrap: wrap; }
   .wo-activities { grid-template-columns: 1fr; }
 }
 
