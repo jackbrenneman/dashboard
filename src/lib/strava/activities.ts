@@ -27,6 +27,14 @@ export type ActivitiesPage = {
   hasMore: boolean;
 };
 
+// Strava's start_date_local is local wall-clock time, but formatted with a
+// trailing "Z" as if it were UTC. Stripping it means `new Date(...)`
+// downstream reads the literal wall-clock numbers as local time directly,
+// instead of misreading it as UTC and double-converting.
+function stripUtcSuffix(iso: string): string {
+  return iso.endsWith("Z") ? iso.slice(0, -1) : iso;
+}
+
 // One page of activities, newest first (Strava's default order without an
 // `after` param — deliberately not using `after` here, since it flips
 // Strava's sort to oldest-first, which plain `page`-based pagination avoids
@@ -54,7 +62,7 @@ export async function listActivities(
     sportType: a.sport_type || a.type || "Workout",
     distanceMeters: a.distance,
     movingTimeSeconds: a.moving_time,
-    startDateLocal: a.start_date_local,
+    startDateLocal: stripUtcSuffix(a.start_date_local),
   }));
   // A full page means there might be more; a short page means we've hit the
   // end. No separate count endpoint needed.
