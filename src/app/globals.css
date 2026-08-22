@@ -261,10 +261,7 @@ input, select {
 }
 .epl-standings-team {
   text-align: left;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  max-width: 0;
+  white-space: normal;
 }
 .epl-standings-pts { font-weight: 600; }
 .epl-standings tr:last-child td { border-bottom: none; }
