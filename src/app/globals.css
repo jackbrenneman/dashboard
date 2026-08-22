@@ -272,6 +272,14 @@ input, select {
 @media (max-width: 620px) {
   .epl-standings { font-size: 11px; }
   .epl-standings th, .epl-standings td { padding: 4px 3px; }
+
+  .epl-match { flex-wrap: wrap; }
+  .epl-match-teams {
+    flex: 1 1 100%;
+    overflow: visible;
+    text-overflow: clip;
+    white-space: normal;
+  }
 }
 
 /* Loading skeletons */
