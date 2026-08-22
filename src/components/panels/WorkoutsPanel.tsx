@@ -5,8 +5,17 @@ import ActivityList from "@/components/panels/ActivityList";
 import { useStrava } from "@/hooks/useStrava";
 
 export default function WorkoutsPanel() {
-  const { status, athleteName, activities, activitiesLoading, connect, disconnect, refresh } =
-    useStrava();
+  const {
+    status,
+    activities,
+    hasMore,
+    activitiesLoading,
+    loadingMore,
+    connect,
+    disconnect,
+    refresh,
+    loadMore,
+  } = useStrava();
 
   return (
     <Panel id="panel-workouts" title="Workouts" wide>
@@ -45,7 +54,6 @@ export default function WorkoutsPanel() {
         <>
           <div className="cal-toolbar">
             <div className="cal-account">
-              {athleteName && <span className="cal-email">{athleteName}</span>}
               <button type="button" className="cal-disconnect" onClick={refresh}>
                 Refresh
               </button>
@@ -59,7 +67,12 @@ export default function WorkoutsPanel() {
               <div className="skeleton" style={{ height: 100 }} />
             </div>
           ) : (
-            <ActivityList activities={activities} />
+            <ActivityList
+              activities={activities}
+              hasMore={hasMore}
+              loadingMore={loadingMore}
+              onLoadMore={loadMore}
+            />
           )}
         </>
       )}

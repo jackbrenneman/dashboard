@@ -1,6 +1,7 @@
 // Strava activities API client (raw fetch, server-side only).
 
 const API_BASE = "https://www.strava.com/api/v3";
+export const ACTIVITIES_PER_PAGE = 20;
 
 export type StravaActivity = {
   id: number;
@@ -21,17 +22,30 @@ type SummaryActivity = {
   start_date_local: string;
 };
 
-// Recent activities covering the last `sinceDays` days. One request, no
-// pagination — plenty for a glance view given the app's rate limits and a
-// single-user training volume.
-export async function listRecentActivities(
+export type ActivitiesPage = {
+  activities: StravaActivity[];
+  hasMore: boolean;
+};
+
+// Strava's start_date_local is local wall-clock time, but formatted with a
+// trailing "Z" as if it were UTC. Stripping it means `new Date(...)`
+// downstream reads the literal wall-clock numbers as local time directly,
+// instead of misreading it as UTC and double-converting.
+function stripUtcSuffix(iso: string): string {
+  return iso.endsWith("Z") ? iso.slice(0, -1) : iso;
+}
+
+// One page of activities, newest first (Strava's default order without an
+// `after` param — deliberately not using `after` here, since it flips
+// Strava's sort to oldest-first, which plain `page`-based pagination avoids
+// entirely).
+export async function listActivities(
   accessToken: string,
-  sinceDays = 30,
-  perPage = 50
-): Promise<StravaActivity[]> {
-  const after = Math.floor(Date.now() / 1000) - sinceDays * 86400;
+  page = 1,
+  perPage = ACTIVITIES_PER_PAGE
+): Promise<ActivitiesPage> {
   const params = new URLSearchParams({
-    after: String(after),
+    page: String(page),
     per_page: String(perPage),
   });
   const res = await fetch(`${API_BASE}/athlete/activities?${params}`, {
@@ -42,20 +56,15 @@ export async function listRecentActivities(
     throw new Error(`Strava activities request failed (${res.status})`);
   }
   const data: SummaryActivity[] = await res.json();
-  // Strava sorts ascending (oldest first) whenever `after` is passed, the
-  // opposite of its no-`after` default — sort explicitly rather than rely
-  // on that, so callers always get newest-first regardless.
-  return data
-    .map((a) => ({
-      id: a.id,
-      name: a.name,
-      sportType: a.sport_type || a.type || "Workout",
-      distanceMeters: a.distance,
-      movingTimeSeconds: a.moving_time,
-      startDateLocal: a.start_date_local,
-    }))
-    .sort(
-      (a, b) =>
-        new Date(b.startDateLocal).getTime() - new Date(a.startDateLocal).getTime()
-    );
+  const activities = data.map((a) => ({
+    id: a.id,
+    name: a.name,
+    sportType: a.sport_type || a.type || "Workout",
+    distanceMeters: a.distance,
+    movingTimeSeconds: a.moving_time,
+    startDateLocal: stripUtcSuffix(a.start_date_local),
+  }));
+  // A full page means there might be more; a short page means we've hit the
+  // end. No separate count endpoint needed.
+  return { activities, hasMore: activities.length === perPage };
 }
