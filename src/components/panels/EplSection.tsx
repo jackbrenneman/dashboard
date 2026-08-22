@@ -107,7 +107,9 @@ export default function EplSection() {
             </thead>
             <tbody>
               {standings.map((row) => (
-                <tr key={row.position}>
+                // Team name, not position — early-season standings often
+                // have tied teams sharing the same position number.
+                <tr key={row.team}>
                   <td>{row.position}</td>
                   <td className="epl-standings-team">{row.team}</td>
                   <td>{row.played}</td>
