@@ -27,16 +27,42 @@ function badgeClass(sportType: string): string {
   return sportType.includes("Ride") ? "wo-type-badge wo-type-badge-ride" : "wo-type-badge";
 }
 
-// Monday-start week, matching the convention used elsewhere in the app
-// (see getWeekRangeLabel in lib/dates.ts).
-function startOfWeek(): Date {
-  const today = new Date();
-  const day = today.getDay();
+// Monday 00:00 of the week containing `date`, matching the convention used
+// elsewhere in the app (see getWeekRangeLabel in lib/dates.ts).
+function mondayOf(date: Date): Date {
+  const d = new Date(date);
+  const day = d.getDay();
   const diffToMonday = day === 0 ? -6 : 1 - day;
-  const monday = new Date(today);
-  monday.setDate(today.getDate() + diffToMonday);
-  monday.setHours(0, 0, 0, 0);
-  return monday;
+  d.setDate(d.getDate() + diffToMonday);
+  d.setHours(0, 0, 0, 0);
+  return d;
+}
+
+function formatWeekRange(monday: Date): string {
+  const sunday = new Date(monday);
+  sunday.setDate(monday.getDate() + 6);
+  const opts: Intl.DateTimeFormatOptions = { month: "short", day: "numeric" };
+  return `Week of ${monday.toLocaleDateString(undefined, opts)} – ${sunday.toLocaleDateString(undefined, opts)}`;
+}
+
+type WeekGroup = { monday: Date; activities: StravaActivity[] };
+
+// Activities are already newest-first, so grouping in a single pass
+// preserves both week order (most recent week's key inserted first) and
+// each week's own newest-first order.
+function groupByWeek(activities: StravaActivity[]): WeekGroup[] {
+  const groups = new Map<string, WeekGroup>();
+  for (const a of activities) {
+    const monday = mondayOf(new Date(a.startDateLocal));
+    const key = monday.toISOString();
+    let group = groups.get(key);
+    if (!group) {
+      group = { monday, activities: [] };
+      groups.set(key, group);
+    }
+    group.activities.push(a);
+  }
+  return Array.from(groups.values());
 }
 
 type ActivityListProps = {
@@ -44,14 +70,14 @@ type ActivityListProps = {
 };
 
 export default function ActivityList({ activities }: ActivityListProps) {
-  const weekStart = startOfWeek();
+  const weekStart = mondayOf(new Date());
   const thisWeek = activities.filter(
     (a) => new Date(a.startDateLocal) >= weekStart
   );
   const weeklyDistance = thisWeek.reduce((sum, a) => sum + a.distanceMeters, 0);
   const weeklyTime = thisWeek.reduce((sum, a) => sum + a.movingTimeSeconds, 0);
 
-  const recent = activities.slice(0, 10);
+  const weeks = groupByWeek(activities);
 
   return (
     <div>
@@ -70,20 +96,25 @@ export default function ActivityList({ activities }: ActivityListProps) {
         </div>
       </div>
 
-      {recent.length === 0 ? (
+      {weeks.length === 0 ? (
         <p className="empty-state">No activities in the last 30 days.</p>
       ) : (
-        <ul className="wo-activities">
-          {recent.map((a) => (
-            <li key={a.id} className="wo-activity">
-              <span className={badgeClass(a.sportType)}>{a.sportType}</span>
-              <span className="wo-activity-stats">
-                {formatDistance(a.distanceMeters)} · {formatDuration(a.movingTimeSeconds)}
-              </span>
-              <span className="wo-activity-date">{formatDate(a.startDateLocal)}</span>
-            </li>
-          ))}
-        </ul>
+        weeks.map((week) => (
+          <div key={week.monday.toISOString()} className="wo-week">
+            <p className="wo-week-label">{formatWeekRange(week.monday)}</p>
+            <ul className="wo-activities">
+              {week.activities.map((a) => (
+                <li key={a.id} className="wo-activity">
+                  <span className={badgeClass(a.sportType)}>{a.sportType}</span>
+                  <span className="wo-activity-stats">
+                    {formatDistance(a.distanceMeters)} · {formatDuration(a.movingTimeSeconds)}
+                  </span>
+                  <span className="wo-activity-date">{formatDate(a.startDateLocal)}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))
       )}
     </div>
   );
