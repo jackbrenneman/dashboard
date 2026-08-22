@@ -18,6 +18,7 @@ type ChecklistPanelProps = {
   deleteItem: (id: string) => void;
   updateItemText: (id: string, text: string) => void;
   reorderItems: (orderedIds: string[]) => void;
+  onRefresh?: () => void;
   aboveList?: React.ReactNode;
   belowList?: React.ReactNode;
 };
@@ -35,6 +36,7 @@ export default function ChecklistPanel({
   deleteItem,
   updateItemText,
   reorderItems,
+  onRefresh,
   aboveList,
   belowList,
 }: ChecklistPanelProps) {
@@ -117,7 +119,18 @@ export default function ChecklistPanel({
   }
 
   return (
-    <Panel id={id} title={title} wide={wide}>
+    <Panel
+      id={id}
+      title={title}
+      wide={wide}
+      actions={
+        onRefresh ? (
+          <button type="button" className="cal-disconnect" onClick={onRefresh}>
+            Refresh
+          </button>
+        ) : undefined
+      }
+    >
       {aboveList}
 
       <form className="add-row" onSubmit={submit}>

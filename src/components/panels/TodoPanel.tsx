@@ -12,6 +12,7 @@ export default function TodoPanel() {
     deleteItem,
     updateItemText,
     reorderItems,
+    refresh,
   } = useChecklist("todos");
 
   return (
@@ -27,6 +28,7 @@ export default function TodoPanel() {
       deleteItem={deleteItem}
       updateItemText={updateItemText}
       reorderItems={reorderItems}
+      onRefresh={refresh}
     />
   );
 }

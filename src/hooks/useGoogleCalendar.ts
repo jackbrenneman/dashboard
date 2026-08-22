@@ -134,6 +134,35 @@ export function useGoogleCalendar() {
     clearCachedPrefix("google:events:");
   }, []);
 
+  const refresh = useCallback(async () => {
+    if (status !== "connected") return;
+    const key = eventsCacheKey(visibleMonth);
+    setEventsLoading(true);
+    const { start, end } = gridRange(visibleMonth);
+    try {
+      const res = await fetch(
+        `/api/calendar/events?start=${encodeURIComponent(start)}&end=${encodeURIComponent(end)}`
+      );
+      if (res.status === 409) {
+        const data = await res.json();
+        const nextStatus: CalendarStatus = data.needsReconnect
+          ? "needs-reconnect"
+          : "disconnected";
+        setStatus(nextStatus);
+        setCached(STATUS_CACHE_KEY, { status: nextStatus, email });
+        setFetchedEvents([]);
+        return;
+      }
+      const data = await res.json();
+      setFetchedEvents(data.events ?? []);
+      setCached(key, data.events ?? []);
+    } catch {
+      setFetchedEvents([]);
+    } finally {
+      setEventsLoading(false);
+    }
+  }, [status, visibleMonth, email]);
+
   const goToMonth = useCallback((delta: number) => {
     setVisibleMonth((prev) => {
       const d = new Date(prev.year, prev.month + delta, 1);
@@ -151,6 +180,7 @@ export function useGoogleCalendar() {
     visibleMonth,
     connect,
     disconnect,
+    refresh,
     goToMonth,
     goToday,
   };
