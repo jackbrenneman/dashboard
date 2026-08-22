@@ -234,7 +234,6 @@ input, select {
 }
 
 .epl-standings {
-  width: 100%;
   border-collapse: collapse;
   font-size: 12.5px;
 }
@@ -246,21 +245,21 @@ input, select {
   padding: 0 6px 6px;
   border-bottom: 1px solid var(--border-strong);
 }
-.epl-standings th:first-child,
-.epl-standings th:nth-child(2) {
-  text-align: left;
-}
 .epl-standings td {
   text-align: right;
   padding: 5px 6px;
   border-bottom: 1px solid var(--border);
 }
-.epl-standings td:first-child {
+.epl-standings th:first-child,
+.epl-standings th:nth-child(2),
+.epl-standings td:first-child,
+.epl-standings td:nth-child(2) {
   text-align: left;
+}
+.epl-standings td:first-child {
   color: var(--text-muted);
 }
-.epl-standings-team {
-  text-align: left;
+.epl-standings td:nth-child(2) {
   white-space: normal;
 }
 .epl-standings-pts { font-weight: 600; }
