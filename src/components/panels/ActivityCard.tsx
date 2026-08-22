@@ -42,12 +42,6 @@ function detailRows(a: StravaActivity, d: ActivityDetail): DetailRow[] {
   if (d.calories) {
     rows.push({ label: "Calories", value: `${Math.round(d.calories)}` });
   }
-  if (d.deviceName) {
-    rows.push({ label: "Recorded with", value: d.deviceName });
-  }
-  if (d.achievementCount > 0) {
-    rows.push({ label: "Achievements", value: `${d.achievementCount} 🏆` });
-  }
   return rows;
 }
 

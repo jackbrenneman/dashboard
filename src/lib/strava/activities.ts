@@ -78,8 +78,6 @@ export type ActivityDetail = {
   averageWatts: number | null;
   totalElevationGainMeters: number;
   averageSpeedMps: number;
-  deviceName: string | null;
-  achievementCount: number;
 };
 
 type DetailedActivity = {
@@ -91,13 +89,11 @@ type DetailedActivity = {
   average_watts?: number;
   total_elevation_gain: number;
   average_speed: number;
-  device_name?: string | null;
-  achievement_count: number;
 };
 
 // Full detail for a single activity — richer than what the list endpoint
-// returns (heart rate, power, elevation, device, description). Fetched
-// on demand per activity, not eagerly for the whole list.
+// returns (heart rate, power, elevation, description). Fetched on demand
+// per activity, not eagerly for the whole list.
 export async function getActivityDetail(
   accessToken: string,
   id: number
@@ -119,7 +115,5 @@ export async function getActivityDetail(
     averageWatts: a.average_watts ?? null,
     totalElevationGainMeters: a.total_elevation_gain,
     averageSpeedMps: a.average_speed,
-    deviceName: a.device_name || null,
-    achievementCount: a.achievement_count,
   };
 }
