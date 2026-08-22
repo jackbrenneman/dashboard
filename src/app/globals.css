@@ -167,10 +167,20 @@ input, select {
 .epl-section {
   margin-top: 4px;
 }
+.epl-refresh {
+  display: block;
+  margin: 0 0 8px auto;
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--accent);
+  font-size: 12px;
+  text-decoration: underline;
+}
 .epl-block {
   margin-top: 14px;
 }
-.epl-block:first-child {
+.epl-block:first-of-type {
   margin-top: 0;
 }
 .epl-block-title {
@@ -180,6 +190,16 @@ input, select {
   letter-spacing: 0.03em;
   color: var(--text-muted);
   margin: 0 0 6px;
+}
+.epl-live-badge {
+  flex-shrink: 0;
+  font-size: 10px;
+  font-weight: 600;
+  color: #fff;
+  background: var(--danger);
+  border-radius: 4px;
+  padding: 2px 6px;
+  text-transform: uppercase;
 }
 
 .epl-matches {

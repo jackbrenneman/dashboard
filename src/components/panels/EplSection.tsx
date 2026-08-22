@@ -12,6 +12,7 @@ function formatMatchDate(iso: string): string {
 }
 
 const UPCOMING_STATUSES = new Set(["SCHEDULED", "TIMED"]);
+const LIVE_STATUSES = new Set(["IN_PLAY", "PAUSED", "SUSPENDED"]);
 
 export default function EplSection() {
   const { matches, standings, loading, error, refresh } = useEpl();
@@ -35,6 +36,10 @@ export default function EplSection() {
     );
   }
 
+  const live = matches
+    .filter((m) => LIVE_STATUSES.has(m.status))
+    .sort((a, b) => new Date(a.utcDate).getTime() - new Date(b.utcDate).getTime());
+
   const upcoming = matches
     .filter((m) => UPCOMING_STATUSES.has(m.status))
     .sort((a, b) => new Date(a.utcDate).getTime() - new Date(b.utcDate).getTime())
@@ -46,6 +51,29 @@ export default function EplSection() {
 
   return (
     <div className="epl-section">
+      <button type="button" className="epl-refresh" onClick={refresh}>
+        Refresh
+      </button>
+
+      {live.length > 0 && (
+        <div className="epl-block">
+          <h4 className="epl-block-title">Live</h4>
+          <ul className="epl-matches">
+            {live.map((m) => (
+              <li key={m.id} className="epl-match">
+                <span className="epl-match-teams">
+                  {m.homeTeam} vs {m.awayTeam}
+                </span>
+                <span className="epl-match-score">
+                  {m.homeScore} – {m.awayScore}
+                </span>
+                <span className="epl-live-badge">Live</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
       <div className="epl-block">
         <h4 className="epl-block-title">Upcoming</h4>
         {upcoming.length === 0 ? (
