@@ -71,11 +71,10 @@ export default function ActivityList({ activities }: ActivityListProps) {
           {recent.map((a) => (
             <li key={a.id} className="wo-activity">
               <span className="wo-type-badge">{a.sportType}</span>
-              <span className="wo-activity-name">{a.name}</span>
-              <span className="wo-activity-meta">
-                {formatDistance(a.distanceMeters)} · {formatDuration(a.movingTimeSeconds)} ·{" "}
-                {formatDate(a.startDateLocal)}
+              <span className="wo-activity-stats">
+                {formatDistance(a.distanceMeters)} · {formatDuration(a.movingTimeSeconds)}
               </span>
+              <span className="wo-activity-date">{formatDate(a.startDateLocal)}</span>
             </li>
           ))}
         </ul>
