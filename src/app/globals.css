@@ -415,6 +415,8 @@ input, select {
   font-size: 13.5px;
   color: var(--text);
 }
+.btn-secondary:hover { background: #EDEEF1; }
+.btn-secondary:disabled { opacity: 0.6; cursor: default; }
 .btn-primary {
   background: var(--accent);
   color: #fff;
@@ -703,6 +705,10 @@ input, select {
 .wo-activity-date {
   font-size: 11px;
   color: var(--text-muted);
+}
+.wo-load-more {
+  display: block;
+  margin: 16px auto 0;
 }
 
 @media (max-width: 900px) {

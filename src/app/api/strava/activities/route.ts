@@ -1,9 +1,12 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { getValidAccessToken, NotConnectedError } from "@/lib/strava/tokens";
-import { listRecentActivities } from "@/lib/strava/activities";
+import { listActivities } from "@/lib/strava/activities";
 
-export async function GET() {
+export async function GET(request: Request) {
+  const { searchParams } = new URL(request.url);
+  const page = Math.max(1, Number(searchParams.get("page")) || 1);
+
   const supabase = await createClient();
   const {
     data: { user },
@@ -14,8 +17,8 @@ export async function GET() {
 
   try {
     const accessToken = await getValidAccessToken(supabase, user.id);
-    const activities = await listRecentActivities(accessToken);
-    return NextResponse.json({ activities });
+    const { activities, hasMore } = await listActivities(accessToken, page);
+    return NextResponse.json({ activities, hasMore });
   } catch (err) {
     if (err instanceof NotConnectedError) {
       return NextResponse.json(

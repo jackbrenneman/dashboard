@@ -67,9 +67,17 @@ function groupByWeek(activities: StravaActivity[]): WeekGroup[] {
 
 type ActivityListProps = {
   activities: StravaActivity[];
+  hasMore: boolean;
+  loadingMore: boolean;
+  onLoadMore: () => void;
 };
 
-export default function ActivityList({ activities }: ActivityListProps) {
+export default function ActivityList({
+  activities,
+  hasMore,
+  loadingMore,
+  onLoadMore,
+}: ActivityListProps) {
   const weekStart = mondayOf(new Date());
   const thisWeek = activities.filter(
     (a) => new Date(a.startDateLocal) >= weekStart
@@ -115,6 +123,17 @@ export default function ActivityList({ activities }: ActivityListProps) {
             </ul>
           </div>
         ))
+      )}
+
+      {hasMore && (
+        <button
+          type="button"
+          className="btn-secondary wo-load-more"
+          disabled={loadingMore}
+          onClick={onLoadMore}
+        >
+          {loadingMore ? "Loading…" : "Load more"}
+        </button>
       )}
     </div>
   );
