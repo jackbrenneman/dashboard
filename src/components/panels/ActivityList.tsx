@@ -21,6 +21,12 @@ function formatDate(iso: string): string {
   });
 }
 
+// Covers Strava's ride sport types (Ride, VirtualRide, GravelRide,
+// MountainBikeRide, EBikeRide, ...) without needing an exhaustive list.
+function badgeClass(sportType: string): string {
+  return sportType.includes("Ride") ? "wo-type-badge wo-type-badge-ride" : "wo-type-badge";
+}
+
 // Monday-start week, matching the convention used elsewhere in the app
 // (see getWeekRangeLabel in lib/dates.ts).
 function startOfWeek(): Date {
@@ -70,7 +76,7 @@ export default function ActivityList({ activities }: ActivityListProps) {
         <ul className="wo-activities">
           {recent.map((a) => (
             <li key={a.id} className="wo-activity">
-              <span className="wo-type-badge">{a.sportType}</span>
+              <span className={badgeClass(a.sportType)}>{a.sportType}</span>
               <span className="wo-activity-stats">
                 {formatDistance(a.distanceMeters)} · {formatDuration(a.movingTimeSeconds)}
               </span>
