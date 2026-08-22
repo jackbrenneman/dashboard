@@ -1,5 +1,6 @@
 "use client";
 
+import { formatEventTime } from "@/lib/dates";
 import type { StravaActivity } from "@/lib/strava/activities";
 
 const METERS_PER_MILE = 1609.344;
@@ -43,6 +44,21 @@ function formatWeekRange(monday: Date): string {
   sunday.setDate(monday.getDate() + 6);
   const opts: Intl.DateTimeFormatOptions = { month: "short", day: "numeric" };
   return `Week of ${monday.toLocaleDateString(undefined, opts)} – ${sunday.toLocaleDateString(undefined, opts)}`;
+}
+
+// Miles run and biked for a set of activities, e.g. "12.3 mi run · 28.4 mi
+// biked" — omits a category entirely when its total is zero.
+function weekTotals(activities: StravaActivity[]): string | null {
+  const runMeters = activities
+    .filter((a) => a.sportType.includes("Run"))
+    .reduce((sum, a) => sum + a.distanceMeters, 0);
+  const rideMeters = activities
+    .filter((a) => a.sportType.includes("Ride"))
+    .reduce((sum, a) => sum + a.distanceMeters, 0);
+  const parts: string[] = [];
+  if (runMeters > 0) parts.push(`${formatDistance(runMeters)} run`);
+  if (rideMeters > 0) parts.push(`${formatDistance(rideMeters)} biked`);
+  return parts.length > 0 ? parts.join(" · ") : null;
 }
 
 type WeekGroup = { monday: Date; activities: StravaActivity[] };
@@ -107,22 +123,30 @@ export default function ActivityList({
       {weeks.length === 0 ? (
         <p className="empty-state">No activities in the last 30 days.</p>
       ) : (
-        weeks.map((week) => (
-          <div key={week.monday.toISOString()} className="wo-week">
-            <p className="wo-week-label">{formatWeekRange(week.monday)}</p>
-            <ul className="wo-activities">
-              {week.activities.map((a) => (
-                <li key={a.id} className="wo-activity">
-                  <span className={badgeClass(a.sportType)}>{a.sportType}</span>
-                  <span className="wo-activity-stats">
-                    {formatDistance(a.distanceMeters)} · {formatDuration(a.movingTimeSeconds)}
-                  </span>
-                  <span className="wo-activity-date">{formatDate(a.startDateLocal)}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        ))
+        weeks.map((week) => {
+          const totals = weekTotals(week.activities);
+          return (
+            <div key={week.monday.toISOString()} className="wo-week">
+              <p className="wo-week-label">
+                {formatWeekRange(week.monday)}
+                {totals && <span className="wo-week-totals"> · {totals}</span>}
+              </p>
+              <ul className="wo-activities">
+                {week.activities.map((a) => (
+                  <li key={a.id} className="wo-activity">
+                    <span className={badgeClass(a.sportType)}>{a.sportType}</span>
+                    <span className="wo-activity-stats">
+                      {formatDistance(a.distanceMeters)} · {formatDuration(a.movingTimeSeconds)}
+                    </span>
+                    <span className="wo-activity-date">
+                      {formatDate(a.startDateLocal)} · {formatEventTime(a.startDateLocal)}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          );
+        })
       )}
 
       {hasMore && (

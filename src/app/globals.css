@@ -666,6 +666,10 @@ input, select {
   font-weight: 600;
   margin: 0 0 8px;
 }
+.wo-week-totals {
+  font-weight: 400;
+  color: var(--text-muted);
+}
 
 .wo-activities {
   display: grid;
