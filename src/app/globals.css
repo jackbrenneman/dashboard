@@ -650,8 +650,8 @@ input, select {
 }
 
 .wo-activities {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
   gap: 8px;
   list-style: none;
   margin: 0;
@@ -661,11 +661,11 @@ input, select {
   display: flex;
   flex-direction: column;
   gap: 3px;
-  width: 108px;
   padding: 8px 10px;
   background: var(--card);
   border: 1px solid var(--border);
   border-radius: 8px;
+  min-width: 0;
 }
 .wo-type-badge {
   align-self: flex-start;
@@ -685,8 +685,12 @@ input, select {
   color: var(--text-muted);
 }
 
+@media (max-width: 900px) {
+  .wo-activities { grid-template-columns: repeat(2, 1fr); }
+}
 @media (max-width: 620px) {
   .wo-stats { flex-wrap: wrap; }
+  .wo-activities { grid-template-columns: 1fr; }
 }
 
 /* Food Prep */
