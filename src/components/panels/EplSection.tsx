@@ -139,7 +139,7 @@ export default function EplSection() {
                 // have tied teams sharing the same position number.
                 <tr key={row.team}>
                   <td>{row.position}</td>
-                  <td className="epl-standings-team">{row.team}</td>
+                  <td>{row.team}</td>
                   <td>{row.played}</td>
                   <td>{row.won}</td>
                   <td>{row.drawn}</td>

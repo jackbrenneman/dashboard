@@ -234,7 +234,6 @@ input, select {
 }
 
 .epl-standings {
-  width: 100%;
   border-collapse: collapse;
   font-size: 12.5px;
 }
@@ -246,25 +245,22 @@ input, select {
   padding: 0 6px 6px;
   border-bottom: 1px solid var(--border-strong);
 }
-.epl-standings th:first-child,
-.epl-standings th:nth-child(2) {
-  text-align: left;
-}
 .epl-standings td {
   text-align: right;
   padding: 5px 6px;
   border-bottom: 1px solid var(--border);
 }
-.epl-standings td:first-child {
+.epl-standings th:first-child,
+.epl-standings th:nth-child(2),
+.epl-standings td:first-child,
+.epl-standings td:nth-child(2) {
   text-align: left;
+}
+.epl-standings td:first-child {
   color: var(--text-muted);
 }
-.epl-standings-team {
-  text-align: left;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  max-width: 0;
+.epl-standings td:nth-child(2) {
+  white-space: normal;
 }
 .epl-standings-pts { font-weight: 600; }
 .epl-standings tr:last-child td { border-bottom: none; }
@@ -272,6 +268,14 @@ input, select {
 @media (max-width: 620px) {
   .epl-standings { font-size: 11px; }
   .epl-standings th, .epl-standings td { padding: 4px 3px; }
+
+  .epl-match { flex-wrap: wrap; }
+  .epl-match-teams {
+    flex: 1 1 100%;
+    overflow: visible;
+    text-overflow: clip;
+    white-space: normal;
+  }
 }
 
 /* Loading skeletons */
