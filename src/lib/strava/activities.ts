@@ -68,3 +68,52 @@ export async function listActivities(
   // end. No separate count endpoint needed.
   return { activities, hasMore: activities.length === perPage };
 }
+
+export type ActivityDetail = {
+  id: number;
+  description: string | null;
+  calories: number | null;
+  averageHeartrate: number | null;
+  maxHeartrate: number | null;
+  averageWatts: number | null;
+  totalElevationGainMeters: number;
+  averageSpeedMps: number;
+};
+
+type DetailedActivity = {
+  id: number;
+  description?: string | null;
+  calories?: number;
+  average_heartrate?: number;
+  max_heartrate?: number;
+  average_watts?: number;
+  total_elevation_gain: number;
+  average_speed: number;
+};
+
+// Full detail for a single activity — richer than what the list endpoint
+// returns (heart rate, power, elevation, description). Fetched on demand
+// per activity, not eagerly for the whole list.
+export async function getActivityDetail(
+  accessToken: string,
+  id: number
+): Promise<ActivityDetail> {
+  const res = await fetch(`${API_BASE}/activities/${id}`, {
+    headers: { Authorization: `Bearer ${accessToken}` },
+    cache: "no-store",
+  });
+  if (!res.ok) {
+    throw new Error(`Strava activity detail request failed (${res.status})`);
+  }
+  const a: DetailedActivity = await res.json();
+  return {
+    id: a.id,
+    description: a.description || null,
+    calories: a.calories ?? null,
+    averageHeartrate: a.average_heartrate ?? null,
+    maxHeartrate: a.max_heartrate ?? null,
+    averageWatts: a.average_watts ?? null,
+    totalElevationGainMeters: a.total_elevation_gain,
+    averageSpeedMps: a.average_speed,
+  };
+}
