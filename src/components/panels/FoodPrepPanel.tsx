@@ -15,6 +15,7 @@ export default function FoodPrepPanel() {
     updateItemText,
     reorderItems,
     clearAll,
+    refresh,
   } = useChecklist("meals");
   const [confirmingClear, setConfirmingClear] = useState(false);
 
@@ -32,6 +33,7 @@ export default function FoodPrepPanel() {
       deleteItem={deleteItem}
       updateItemText={updateItemText}
       reorderItems={reorderItems}
+      onRefresh={refresh}
       aboveList={
         <p className="week-label">{getWeekRangeLabel()}</p>
       }

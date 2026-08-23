@@ -161,6 +161,17 @@ export function useChecklist(table: "todos" | "meals") {
     if (error) applyItems(() => previous);
   }, [items, supabase, table, applyItems]);
 
+  const refresh = useCallback(async () => {
+    setLoading(true);
+    const { data } = await supabase
+      .from(table)
+      .select("id, text, done, position")
+      .order("position", { ascending: true });
+    setItems(data ?? []);
+    setCached(cacheKey, data ?? []);
+    setLoading(false);
+  }, [table, cacheKey, supabase]);
+
   return {
     items,
     loading,
@@ -170,5 +181,6 @@ export function useChecklist(table: "todos" | "meals") {
     updateItemText,
     reorderItems,
     clearAll,
+    refresh,
   };
 }

@@ -13,6 +13,7 @@ export default function CalendarPanel() {
     visibleMonth,
     connect,
     disconnect,
+    refresh,
     goToMonth,
     goToday,
   } = useGoogleCalendar();
@@ -92,6 +93,9 @@ export default function CalendarPanel() {
             </div>
             <div className="cal-account">
               {email && <span className="cal-email">{email}</span>}
+              <button type="button" className="cal-disconnect" onClick={refresh}>
+                Refresh
+              </button>
               <button
                 type="button"
                 className="link cal-disconnect"
