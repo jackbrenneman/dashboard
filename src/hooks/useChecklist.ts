@@ -5,9 +5,9 @@ import { createClient } from "@/lib/supabase/client";
 import { getCached, setCached } from "@/lib/queryCache";
 import type { ChecklistItem } from "@/lib/types";
 
-// Shared behavior for any reorderable checklist table (todos, meals) —
+// Shared behavior for any reorderable checklist table (todos, meals, school_todos) —
 // same columns (id, text, done, position), same CRUD + drag-reorder rules.
-export function useChecklist(table: "todos" | "meals") {
+export function useChecklist(table: "todos" | "meals" | "school_todos") {
   const cacheKey = `checklist:${table}`;
   const [items, setItems] = useState<ChecklistItem[]>(
     () => getCached<ChecklistItem[]>(cacheKey) ?? []

@@ -442,7 +442,10 @@ input, select {
   padding: 0 4px;
   transition: opacity 0.15s ease;
 }
-.todo-item:hover .del-btn, .food-item:hover .del-btn { opacity: 1; }
+.todo-item:hover .del-btn,
+.food-item:hover .del-btn,
+.due-date-item:hover .del-btn,
+.link-item:hover .del-btn { opacity: 1; }
 
 /* Modal */
 .modal-overlay {
@@ -969,3 +972,78 @@ input, select {
   color: var(--danger);
   margin-top: 8px;
 }
+
+/* School */
+.school-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+  align-items: start;
+}
+@media (max-width: 900px) {
+  .school-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 620px) {
+  .school-grid { grid-template-columns: 1fr; }
+}
+
+.add-row input[type=date],
+.add-row input[type=url] {
+  padding: 8px 10px;
+  border: 1px solid var(--border-strong);
+  border-radius: 6px;
+  font-size: 13.5px;
+  background: #fff;
+  color: var(--text);
+}
+.school-add-row {
+  flex-wrap: wrap;
+}
+.school-add-row input[type=text] {
+  flex: 1 1 140px;
+}
+.school-add-row input[type=date],
+.school-add-row input[type=url] {
+  flex: 1 1 120px;
+}
+
+.field-error {
+  font-size: 12.5px;
+  color: var(--danger);
+  margin: -6px 0 12px;
+}
+
+.due-date-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 4px;
+  border-bottom: 1px solid var(--border);
+}
+.due-date-item:last-child { border-bottom: none; }
+.due-date-text { flex: 1; font-size: 13.5px; }
+.due-date-date {
+  font-size: 12.5px;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+.due-date-item.overdue .due-date-date { color: var(--danger); font-weight: 600; }
+.due-date-item.overdue .due-date-text { color: var(--danger); }
+
+.link-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 4px;
+  border-bottom: 1px solid var(--border);
+}
+.link-item:last-child { border-bottom: none; }
+.link-item.dragging { opacity: 0.5; background: #F3F4F6; }
+.link-item-text {
+  flex: 1;
+  font-size: 13.5px;
+  color: var(--accent);
+  text-decoration: none;
+}
+.link-item-text:hover { text-decoration: underline; }
