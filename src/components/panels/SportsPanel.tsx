@@ -3,13 +3,14 @@
 import Panel from "@/components/Panel";
 import EplSection from "@/components/panels/EplSection";
 import F1Section from "@/components/panels/F1Section";
+import CyclingSection from "@/components/panels/CyclingSection";
 
 export default function SportsPanel() {
   return (
     <Panel id="panel-sports" title="Sports" wide>
       <div className="sports-league">
         <h3>Cycling</h3>
-        <p className="empty-state">Standings coming soon.</p>
+        <CyclingSection />
       </div>
       <div className="sports-league">
         <h3>Formula 1</h3>
