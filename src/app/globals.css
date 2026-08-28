@@ -278,6 +278,125 @@ input, select {
   }
 }
 
+/* Formula 1 */
+.f1-section {
+  margin-top: 4px;
+}
+.f1-refresh {
+  display: block;
+  margin: 0 0 8px auto;
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--accent);
+  font-size: 12px;
+  text-decoration: underline;
+}
+.f1-block {
+  margin-top: 14px;
+}
+.f1-block:first-of-type {
+  margin-top: 0;
+}
+.f1-block-title {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--text-muted);
+  margin: 0 0 6px;
+}
+.f1-sprint-badge {
+  flex-shrink: 0;
+  font-size: 10px;
+  font-weight: 600;
+  color: #fff;
+  background: var(--accent);
+  border-radius: 4px;
+  padding: 2px 6px;
+  text-transform: uppercase;
+  margin-left: 6px;
+}
+
+.f1-races {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.f1-race {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 2px;
+  border-bottom: 1px solid var(--border);
+  font-size: 13px;
+}
+.f1-race:last-child { border-bottom: none; }
+.f1-race-name {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+}
+.f1-race-meta {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  font-size: 11.5px;
+  color: var(--text-muted);
+}
+
+.f1-standings {
+  border-collapse: collapse;
+  font-size: 12.5px;
+  width: 100%;
+}
+.f1-standings th {
+  text-align: right;
+  font-size: 10.5px;
+  font-weight: 600;
+  color: var(--text-muted);
+  padding: 0 6px 6px;
+  border-bottom: 1px solid var(--border-strong);
+}
+.f1-standings td {
+  text-align: right;
+  padding: 5px 6px;
+  border-bottom: 1px solid var(--border);
+}
+.f1-standings th:first-child,
+.f1-standings th:nth-child(2),
+.f1-standings td:first-child,
+.f1-standings td:nth-child(2) {
+  text-align: left;
+}
+.f1-standings td:first-child {
+  color: var(--text-muted);
+}
+.f1-standings td:nth-child(2) {
+  white-space: normal;
+}
+.f1-standings-pts { font-weight: 600; }
+.f1-standings tr:last-child td { border-bottom: none; }
+.f1-driver-standings th:nth-child(3),
+.f1-driver-standings td:nth-child(3) {
+  text-align: left;
+}
+
+@media (max-width: 620px) {
+  .f1-standings { font-size: 11px; }
+  .f1-standings th, .f1-standings td { padding: 4px 3px; }
+
+  .f1-race { flex-wrap: wrap; }
+  .f1-race-name {
+    flex: 1 1 100%;
+    overflow: visible;
+    text-overflow: clip;
+    white-space: normal;
+  }
+}
+
 /* Loading skeletons */
 @keyframes skeleton-pulse {
   0%, 100% { opacity: 1; }
