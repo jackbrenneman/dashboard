@@ -2,6 +2,7 @@
 
 import Panel from "@/components/Panel";
 import EplSection from "@/components/panels/EplSection";
+import F1Section from "@/components/panels/F1Section";
 
 export default function SportsPanel() {
   return (
@@ -12,7 +13,7 @@ export default function SportsPanel() {
       </div>
       <div className="sports-league">
         <h3>Formula 1</h3>
-        <p className="empty-state">Standings coming soon.</p>
+        <F1Section />
       </div>
       <div className="sports-league">
         <h3>English Premier League</h3>
